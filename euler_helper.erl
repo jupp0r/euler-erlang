@@ -1,0 +1,88 @@
+-module(euler_helper).
+-include_lib("eunit/include/eunit.hrl").
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1]).
+
+-define(LONG_TEST_PRIME, 1073807359).
+
+prime(X) ->
+    prime(1,X).
+
+prime(_,1) -> false;
+prime(1,X) -> prime(2,X);
+prime(Y,X) ->
+    NeedsTest = needs_prime_testing(Y,X),
+    if
+        NeedsTest ->
+            not (dividable_by(X,Y)) andalso prime(Y+1,X);
+        true ->
+            true
+    end.
+
+
+dividable_by(N,K) ->
+    N rem K =:= 0.
+
+needs_prime_testing(Y,X) ->
+    Y =< math:sqrt(X).
+
+%% euclids algorithm
+gcd(X,0) ->
+    X;
+gcd(X,Y) ->
+    gcd(Y,X rem Y).
+
+lcm(X,Y) ->
+    (X * Y) div gcd(X,Y).
+
+lcm_multiple([X|[Y|[]]]) ->
+    lcm(X,Y);
+lcm_multiple([X|[Y|T]]) ->
+    lcm_multiple([lcm(X,Y)|T]).
+
+
+%% tests
+
+prime_test_() ->
+    [ ?_assert(prime(2)),
+      ?_assert(prime(3)),
+      ?_assert(prime(5)),
+      ?_assert(prime(7)),
+      ?_assertNot(prime(1)),
+      ?_assertNot(prime(4)),
+      ?_assertNot(prime(6)),
+      ?_assertNot(prime(9)) ].
+
+prime_long_test() ->
+    ?assert(prime(?LONG_TEST_PRIME)).
+
+prime_long_neg_test() ->
+    ?assertNot(prime(?LONG_TEST_PRIME+1)).
+
+prime_it_test() ->
+    ?assert(prime(1,7)).
+
+prime_it_not_test() ->
+    ?assertNot(prime(1,4)).
+
+dividable_by_test() ->
+    ?assert(dividable_by(12,3)).
+
+dividable_by_not_test() ->
+    ?assertNot(dividable_by(12,5)).
+
+needs_prime_testing_test_() ->
+    [ ?_assert(needs_prime_testing(2,9)),
+      ?_assertNot(needs_prime_testing(7,42)) ].
+
+gcd_test_() ->
+    [ ?_assertEqual(gcd(1,0),1),
+      ?_assertEqual(gcd(4,8),4),
+      ?_assertEqual(gcd(54,24),6)].
+
+lcm_test_() ->
+    [ ?_assertEqual(lcm(21,6),42),
+      ?_assertEqual(lcm(3,4),12) ].
+
+lcm_multiple_test_() ->
+    [ ?_assertEqual(lcm_multiple([21,6]),42),
+      ?_assertEqual(lcm_multiple(lists:seq(1,10)),2520)].

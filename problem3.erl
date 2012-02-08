@@ -1,28 +1,8 @@
 -module(problem3).
 -include_lib("eunit/include/eunit.hrl").
 -export([problem3/0]).
+-include_lib("common.hrl").
 
--define(LONG_TEST_PRIME, 1073807359).
-
-
-
-prime(X) ->
-    prime(1,X).
-
-prime(_,1) -> false;
-prime(1,X) -> prime(2,X);
-prime(Y,X) ->
-    NeedsTest = needs_prime_testing(Y,X),
-    if
-        NeedsTest ->
-            not (dividable_by(X,Y)) andalso prime(Y+1,X);
-        true ->
-            true
-    end.
-
-
-dividable_by(N,K) ->
-    N rem K =:= 0.
 
 prime_factors(X) ->
     lists:usort(prime_factors(1,X)).
@@ -47,8 +27,6 @@ prime_factors(Y,X) ->
             []
     end.
 
-needs_prime_testing(Y,X) ->
-    Y =< math:sqrt(X).
 
 needs_factor_testing(2,4) ->
     true;
@@ -68,34 +46,6 @@ cond_list(X, Cond) ->
 
 %% tests
 
-prime_test_() ->
-    [ ?_assert(prime(2)),
-      ?_assert(prime(3)),
-      ?_assert(prime(5)),
-      ?_assert(prime(7)),
-      ?_assertNot(prime(1)),
-      ?_assertNot(prime(4)),
-      ?_assertNot(prime(6)),
-      ?_assertNot(prime(9)) ].
-
-prime_long_test() ->
-    ?assert(prime(?LONG_TEST_PRIME)).
-
-prime_long_neg_test() ->
-    ?assertNot(prime(?LONG_TEST_PRIME+1)).
-
-prime_it_test() ->
-    ?assert(prime(1,7)).
-
-prime_it_not_test() ->
-    ?assertNot(prime(1,4)).
-
-dividable_by_test() ->
-    ?assert(dividable_by(12,3)).
-
-dividable_by_not_test() ->
-    ?assertNot(dividable_by(12,5)).
-
 prime_factors_test_() ->
     [ ?_assertEqual(prime_factors(4),[2]),
       ?_assertEqual(prime_factors(6),[2,3]),
@@ -107,10 +57,6 @@ prime_factors_test_() ->
 prime_factors_it_test_() ->
     [ ?_assertEqual(prime_factors(4),[2]),
       ?_assertEqual(prime_factors(21),[3,7]) ].
-
-needs_prime_testing_test_() ->
-    [ ?_assert(needs_prime_testing(2,9)),
-      ?_assertNot(needs_prime_testing(7,42)) ].
 
 needs_factor_testing_test_() ->
     [ ?_assertNot(needs_factor_testing(7,21)),
