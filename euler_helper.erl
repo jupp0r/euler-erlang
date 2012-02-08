@@ -33,9 +33,9 @@ gcd(X,Y) ->
 lcm(X,Y) ->
     (X * Y) div gcd(X,Y).
 
-lcm_multiple([X|[Y|[]]]) ->
+lcm_multiple([X,Y|[]]) ->
     lcm(X,Y);
-lcm_multiple([X|[Y|T]]) ->
+lcm_multiple([X,Y|T]) ->
     lcm_multiple([lcm(X,Y)|T]).
 
 int_to_digit_list(N) ->
