@@ -35,10 +35,10 @@ is_pythagorean_test_() ->
       ?_assertNot(is_pythagorean({4,5,6})) ].
 
 find_sum_triplets_test_() ->
-    [ ?_assertEqual(find_sum_triplets(6),[{1,2,3}]),
-      ?_assertEqual(find_sum_triplets(8),[{1,2,5},{1,3,4}]),
-      ?_assertEqual(find_sum_triplets(12), [{1,2,9},{1,3,8},{1,4,7},{1,5,6},{2,3,7},{2,4,6},{3,4,5}]),
+    [ ?_assertEqual([{1,2,3}],find_sum_triplets(6)),
+      ?_assertEqual([{1,2,5},{1,3,4}],find_sum_triplets(8)),
+      ?_assertEqual([{1,2,9},{1,3,8},{1,4,7},{1,5,6},{2,3,7},{2,4,6},{3,4,5}],find_sum_triplets(12)),
       ?_assert(lists:member({3,4,5}, find_sum_triplets(12))) ].
 
 find_pythagorean_sum_triplets_test_() ->
-    [ ?_assertEqual(find_pythagorean_sum_triplets(12),[{3,4,5}]) ].
+    [ ?_assertEqual([{3,4,5}],find_pythagorean_sum_triplets(12)) ].

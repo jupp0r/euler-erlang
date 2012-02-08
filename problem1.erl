@@ -36,19 +36,19 @@ multiple_of_x_test() ->
     ].
 
 select_multiple_of_x_single_test() ->
-    ?assertEqual(select_multiple_of_x([1,2,3,4,5],3),[3]).
+    ?assertEqual([3],select_multiple_of_x([1,2,3,4,5],3)).
 
 select_multiple_of_x_multiple_test() ->
-    ?assertEqual(select_multiple_of_x([1,2,3,5,6,8,9,12,13],6),[6,12]).
+    ?assertEqual([6,12],select_multiple_of_x([1,2,3,5,6,8,9,12,13],6)).
 
 sum_of_div_list_test() ->
-    ?assertEqual(sum_of_div_list(lists:seq(1,20),5),50).
+    ?assertEqual(50,sum_of_div_list(lists:seq(1,20),5)).
 
 sum_of_multiple_div_lists_example_web_test() ->
-    ?assertEqual(sum_of_multiple_div_lists([3,5],lists:seq(1,9)),23).
+    ?assertEqual(23,sum_of_multiple_div_lists([3,5],lists:seq(1,9))).
 
 sum_of_multiple_div_lists_dup_test() ->
-    ?assertEqual(sum_of_multiple_div_lists([3,4],[8,12]),20).
+    ?assertEqual(20,sum_of_multiple_div_lists([3,4],[8,12])).
 
 multiple_of_any_test() ->
     ?assert(multiple_of_any(24,[11,12,7])).

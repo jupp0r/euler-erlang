@@ -1,9 +1,7 @@
 -module(problem8).
 -include_lib("eunit/include/eunit.hrl").
 -export([problem8/0]).
-
-int_to_digit_list(N) ->
-    lists:map(fun(X) -> {K,_} = string:to_integer([X]), K end, integer_to_list(N)).
+-import(euler_helper,[int_to_digit_list/1]).
 
 greatest_5_product(L) ->
     greatest_5_product(0,int_to_digit_list(L)).
@@ -27,15 +25,11 @@ problem8() ->
 
 %% test
 
-int_to_digit_list_test_() ->
-    [ ?_assertEqual(int_to_digit_list(12),[1,2]),
-      ?_assertEqual(int_to_digit_list(145),[1,4,5]) ].
-
 greatest_5_product_test_() ->
-    [ ?_assertEqual(greatest_5_product(11111),1),
-      ?_assertEqual(greatest_5_product(11115),5),
-      ?_assertEqual(greatest_5_product(211113),3) ].
+    [ ?_assertEqual(1,greatest_5_product(11111)),
+      ?_assertEqual(5,greatest_5_product(11115)),
+      ?_assertEqual(3,greatest_5_product(211113)) ].
 
 list_prod_test_() ->
-    [ ?_assertEqual(list_prod([1,1]),1),
-      ?_assertEqual(list_prod([1,2]),2) ].
+    [ ?_assertEqual(1,list_prod([1,1])),
+      ?_assertEqual(2,list_prod([1,2])) ].

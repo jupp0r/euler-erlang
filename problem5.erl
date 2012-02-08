@@ -5,6 +5,3 @@
 
 problem5() ->
     lcm_multiple(lists:seq(1,20)).
-
-%% tests
-

@@ -15,11 +15,11 @@ problem6() ->
 
 %% test
 sum_of_squares_test_() ->
-    [ ?_assertEqual(sum_of_squares([1,2]),5),
-      ?_assertEqual(sum_of_squares([3,4]),25),
-      ?_assertEqual(sum_of_squares(lists:seq(1,10)),385) ].
+    [ ?_assertEqual(5,sum_of_squares([1,2])),
+      ?_assertEqual(25,sum_of_squares([3,4])),
+      ?_assertEqual(385,sum_of_squares(lists:seq(1,10))) ].
 
 square_of_sums_test_() ->
-    [ ?_assertEqual(square_of_sums([1,2]),9),
-      ?_assertEqual(square_of_sums([1,2,3]),36),
-      ?_assertEqual(square_of_sums(lists:seq(1,10)),3025)].
+    [ ?_assertEqual(9,square_of_sums([1,2])),
+      ?_assertEqual(36,square_of_sums([1,2,3])),
+      ?_assertEqual(3025,square_of_sums(lists:seq(1,10)))].

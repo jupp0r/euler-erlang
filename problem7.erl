@@ -26,6 +26,6 @@ problem7() ->
 
 %% tests
 last_prime_test_() ->
-    [ ?_assertEqual(last_prime(1),2),
-      ?_assertEqual(last_prime(6),13) ].
+    [ ?_assertEqual(2,last_prime(1)),
+      ?_assertEqual(13,last_prime(6)) ].
 

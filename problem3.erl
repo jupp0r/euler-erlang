@@ -1,7 +1,7 @@
 -module(problem3).
 -include_lib("eunit/include/eunit.hrl").
 -export([problem3/0]).
--include_lib("common.hrl").
+-import(euler_helper,[prime/1,dividable_by/2]).
 
 
 prime_factors(X) ->
@@ -47,16 +47,16 @@ cond_list(X, Cond) ->
 %% tests
 
 prime_factors_test_() ->
-    [ ?_assertEqual(prime_factors(4),[2]),
-      ?_assertEqual(prime_factors(6),[2,3]),
-      ?_assertEqual(prime_factors(8),[2]),
-      ?_assertEqual(prime_factors(7),[]),
-      ?_assertEqual(prime_factors(12),[2,3]),
-      ?_assertEqual(prime_factors(13195),[5,7,13,29]) ].
+    [ ?_assertEqual([2],prime_factors(4)),
+      ?_assertEqual([2,3],prime_factors(6)),
+      ?_assertEqual([2],prime_factors(8)),
+      ?_assertEqual([],prime_factors(7)),
+      ?_assertEqual([2,3],prime_factors(12)),
+      ?_assertEqual([5,7,13,29],prime_factors(13195)) ].
 
 prime_factors_it_test_() ->
-    [ ?_assertEqual(prime_factors(4),[2]),
-      ?_assertEqual(prime_factors(21),[3,7]) ].
+    [ ?_assertEqual([2],prime_factors(4)),
+      ?_assertEqual([3,7],prime_factors(21)) ].
 
 needs_factor_testing_test_() ->
     [ ?_assertNot(needs_factor_testing(7,21)),
@@ -64,4 +64,4 @@ needs_factor_testing_test_() ->
       ?_assertNot(needs_factor_testing(13,21)) ].
 
 cond_list_test_() ->
-    [ ?_assertEqual(cond_list(3,true),[3]) ].
+    [ ?_assertEqual([3],cond_list(3,true)) ].

@@ -41,22 +41,22 @@ even_not_test() ->
     ?assertNot(even(1)).
 
 fib_one_test() ->
-    ?assertEqual(fib(1),1).
+    ?assertEqual(1,fib(1)).
 
 fib_two_test() ->
-    ?assertEqual(fib(2),2).
+    ?assertEqual(2,fib(2)).
 
 fib_six_test() ->
-    ?assertEqual(fib(6),13).
+    ?assertEqual(13,fib(6)).
 
 fibsum_simple_test() ->
-    ?assertEqual(fibsum(fun(_) -> true end, fun(X) -> X < 4 end),6).
+    ?assertEqual(6,fibsum(fun(_) -> true end, fun(X) -> X < 4 end)).
 
 fibsum_longer_test() ->
-    ?assertEqual(fibsum(1, fun(_) -> true end, fun(X) -> X < 6 end),11).
+    ?assertEqual(11,fibsum(1, fun(_) -> true end, fun(X) -> X < 6 end)).
 
 fibsum_step_test() ->
-    ?assertEqual(fibsum(1,fun(_) -> true end, fun(X) -> X < 4 end), 6).
+    ?assertEqual(6,fibsum(1,fun(_) -> true end, fun(X) -> X < 4 end)).
 
 fibsum_invariant_test() ->
-    ?assertEqual(fibsum(1,fun(X) -> X == 1 end, fun(X) -> X < 4 end), 1).
+    ?assertEqual(1,fibsum(1,fun(X) -> X == 1 end, fun(X) -> X < 4 end)).
