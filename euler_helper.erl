@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 
@@ -17,7 +17,6 @@ prime(Y,X) ->
         true ->
             true
     end.
-
 
 dividable_by(N,K) ->
     N rem K =:= 0.
@@ -39,6 +38,23 @@ lcm_multiple([X|[Y|[]]]) ->
 lcm_multiple([X|[Y|T]]) ->
     lcm_multiple([lcm(X,Y)|T]).
 
+int_to_digit_list(N) ->
+    lists:map(fun(X) -> {K,_} = string:to_integer([X]), K end, integer_to_list(N)).
+
+int_pow(0,_) ->
+    0;
+int_pow(_,0) ->
+    1;
+int_pow(B,E) ->
+    int_pow(0,B,E).
+
+int_pow(K,B,E) ->
+    if
+        K == E ->
+            1;
+        true ->
+            B * int_pow(K+1,B,E)
+    end.
 
 %% tests
 
@@ -86,3 +102,11 @@ lcm_test_() ->
 lcm_multiple_test_() ->
     [ ?_assertEqual(lcm_multiple([21,6]),42),
       ?_assertEqual(lcm_multiple(lists:seq(1,10)),2520)].
+
+int_to_digit_list_test_() ->
+    [ ?_assertEqual([1,2],int_to_digit_list(12)),
+      ?_assertEqual([1,4,5],int_to_digit_list(145)) ].
+
+int_pow_test_() ->
+    [?_assertEqual(1,int_pow(2,0)),
+     ?_assertEqual(9,int_pow(3,2))].
