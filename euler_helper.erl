@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, fac/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 
@@ -49,12 +49,20 @@ int_pow(B,E) ->
     int_pow(0,B,E).
 
 int_pow(K,B,E) ->
+    int_pow_fun(K,B,E,fun(X) -> X end).
+
+int_pow_fun(B,E,F) ->
+    int_pow_fun(0,B,E,F).
+
+int_pow_fun(K,B,E,F) ->
     if
-        K == E ->
-            1;
+        K >= E ->
+            F(1);
         true ->
-            B * int_pow(K+1,B,E)
+            F(B * int_pow_fun(K+1,B,E,F))
     end.
+
+
 
 fac(0) ->
     1;
@@ -123,6 +131,9 @@ int_to_digit_list_test_() ->
 int_pow_test_() ->
     [ ?_assertEqual(1,int_pow(2,0)),
      ?_assertEqual(9,int_pow(3,2))].
+
+int_pow_fun_test_() ->
+    [ ?_assertEqual(0,int_pow_fun(32,2,fun(_) -> 0 end)) ].
 
 fac_test_() ->
     [ ?_assertEqual(1,fac(0)),
