@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 
@@ -62,8 +62,6 @@ int_pow_fun(K,B,E,F) ->
             F(B * int_pow_fun(K+1,B,E,F))
     end.
 
-
-
 fac(0) ->
     1;
 fac(N) ->
@@ -77,7 +75,16 @@ fac(K,N) ->
             K * fac(K+1,N)
     end.
 
+triangle_seq(N) when N > 0 ->
+    lists:sum(lists:seq(1,N)).
+
 %% tests
+
+triangle_seq_test_() ->
+    [?_assertEqual(1,triangle_seq(1)),
+     ?_assertEqual(28,triangle_seq(7)),
+     ?_assertError(function_clause,triangle_seq(0)),
+     ?_assertError(function_clause,triangle_seq(-4))].
 
 prime_test_() ->
     [ ?_assert(prime(2)),

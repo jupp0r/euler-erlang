@@ -1,10 +1,8 @@
 -module(problem12).
 -include_lib("eunit/include/eunit.hrl").
+-import(euler_helper,[triangle_seq/1]).
 
 -export([problem12/0]).
-
-triangle_seq(N) when N > 0 ->
-    lists:sum(lists:seq(1,N)).
 
 num_divisors(1) ->
     1;
@@ -42,11 +40,6 @@ problem12() ->
     find_first_triangle_number_with_n_divisors(501).
 
 %% tests
-triangle_seq_test_() ->
-    [?_assertEqual(1,triangle_seq(1)),
-     ?_assertEqual(28,triangle_seq(7)),
-     ?_assertError(function_clause,triangle_seq(0)),
-     ?_assertError(function_clause,triangle_seq(-4))].
 
 num_divisors_test_() ->
     [?_assertEqual(1,num_divisors(1)),
