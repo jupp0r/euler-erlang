@@ -1,32 +1,7 @@
 -module(problem21).
 -include_lib("eunit/include/eunit.hrl").
 -export([problem21/0]).
-
-divisors(0) ->
-    [];
-divisors(1) ->
-    [];
-divisors(N) ->
-    lists:sort(divisors(1,N)).
-
-divisors(1,N) ->
-    [1] ++ divisors(2,N);
-divisors(K,N) ->
-    Enough = K > math:sqrt(N),
-    if
-        Enough ->
-            [];
-        true ->
-            if
-                N rem K == 0 ->
-                    [K, N div K];
-                true ->
-                    []
-            end ++ divisors(K+1,N)
-    end.
-
-sdivisors(N) ->
-    lists:sum(divisors(N)).
+-import(euler_helper,[sdivisors/1]).
 
 amicable_number_sum_upto(1) ->
     0;
@@ -48,15 +23,6 @@ amicable_number(N) ->
     SDiv == N andalso N /= NDiv.
 
 %% tests
-
-divisors_test_() ->
-    [
-     ?_assertEqual([],divisors(0)),
-     ?_assertEqual([],divisors(1)),
-     ?_assertEqual([1],divisors(2)),
-     ?_assertEqual([1,2,3],divisors(6)),
-     ?_assertEqual([1,2,3,4,6],divisors(12))
-    ].
 
 amicable_number_test_() ->
     [

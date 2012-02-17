@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -201,6 +201,36 @@ triag_offset_in_row(K,N) ->
             triag_offset_in_row(K+1,N)
     end.
 
+divisors(0) ->
+    [];
+divisors(1) ->
+    [];
+divisors(N) ->
+    lists:sort(divisors(1,N)).
+
+divisors(1,N) ->
+    [1] ++ divisors(2,N);
+divisors(K,N) ->
+    Enough = K > math:sqrt(N),
+    if
+        Enough ->
+            [];
+        true ->
+            if
+                N rem K == 0 ->
+                    if K * K == N ->
+                            [K];
+                       true ->
+                            [K, N div K]
+                    end;
+                true ->
+                    []
+            end ++ divisors(K+1,N)
+    end.
+
+sdivisors(N) ->
+    lists:sum(divisors(N)).
+
 
 %% tests
 
@@ -295,4 +325,14 @@ triag_offset_in_row_test_() ->
      ?_assertEqual(0,triag_offset_in_row(1)),
      ?_assertEqual(1,triag_offset_in_row(8)),
      ?_assertEqual(3,triag_offset_in_row(10))
+    ].
+
+
+divisors_test_() ->
+    [
+     ?_assertEqual([],divisors(0)),
+     ?_assertEqual([],divisors(1)),
+     ?_assertEqual([1],divisors(2)),
+     ?_assertEqual([1,2,3],divisors(6)),
+     ?_assertEqual([1,2,3,4,6],divisors(12))
     ].
