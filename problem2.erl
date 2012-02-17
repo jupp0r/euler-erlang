@@ -1,16 +1,10 @@
 -module(problem2).
 -include_lib("eunit/include/eunit.hrl").
 -export([problem2/0]).
+-import(euler_helper,[fib/1]).
 
 even(X) ->
     X rem 2 == 0.
-
-fib(1) ->
-    1;
-fib(2) ->
-    2;
-fib(N) ->
-    fib(N-2) + fib(N-1).
 
 fibsum(Invariant, Termcond) ->
     fibsum(1, Invariant, Termcond).
@@ -39,15 +33,6 @@ even_test() ->
 
 even_not_test() ->
     ?assertNot(even(1)).
-
-fib_one_test() ->
-    ?assertEqual(1,fib(1)).
-
-fib_two_test() ->
-    ?assertEqual(2,fib(2)).
-
-fib_six_test() ->
-    ?assertEqual(13,fib(6)).
 
 fibsum_simple_test() ->
     ?assertEqual(6,fibsum(fun(_) -> true end, fun(X) -> X < 4 end)).

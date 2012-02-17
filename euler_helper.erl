@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -231,8 +231,24 @@ divisors(K,N) ->
 sdivisors(N) ->
     lists:sum(divisors(N)).
 
+fib(1) ->
+    1;
+fib(2) ->
+    2;
+fib(N) ->
+    fib(N-2) + fib(N-1).
+
 
 %% tests
+
+fib_one_test() ->
+    ?assertEqual(1,fib(1)).
+
+fib_two_test() ->
+    ?assertEqual(2,fib(2)).
+
+fib_six_test() ->
+    ?assertEqual(13,fib(6)).
 
 triangle_seq_test_() ->
     [?_assertEqual(1,triangle_seq(1)),
