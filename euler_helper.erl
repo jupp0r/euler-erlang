@@ -6,6 +6,8 @@
 -define(infinity,9999999999999999999999999).
 
 
+prime(X) when X < 2 ->
+    false;
 prime(X) ->
     prime(1,X).
 
