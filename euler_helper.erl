@@ -1,10 +1,12 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
 
+perms([]) -> [[]];
+perms(L)  -> [[H|T] || H <- L, T <- perms(L--[H])].
 
 prime(X) when X < 2 ->
     false;
@@ -44,6 +46,10 @@ lcm_multiple([X,Y|T]) ->
 
 int_to_digit_list(N) ->
     lists:map(fun(X) -> {K,_} = string:to_integer([X]), K end, integer_to_list(N)).
+
+digit_list_to_int(L) ->
+    {K,_} = lists:foldr(fun(X,{Acc,N}) -> {Acc + X*int_pow(10,N),N+1} end, {0,0}, L),
+    K.
 
 int_pow(0,_) ->
     0;
@@ -211,7 +217,7 @@ divisors(N) ->
     lists:sort(divisors(1,N)).
 
 divisors(1,N) ->
-    [1] ++ divisors(2,N);
+    [1] ++ divisors(2,N) ++ [N];
 divisors(K,N) ->
     Enough = K > math:sqrt(N),
     if
@@ -242,6 +248,13 @@ fib(N) ->
 
 
 %% tests
+
+digit_list_to_int_test_() ->
+    [
+     ?_assertEqual(12,digit_list_to_int([1,2])),
+     ?_assertEqual(13242, digit_list_to_int([1,3,2,4,2])),
+     ?_assertEqual(1, digit_list_to_int([1]))
+    ].
 
 fib_one_test() ->
     ?assertEqual(1,fib(1)).
@@ -350,7 +363,7 @@ divisors_test_() ->
     [
      ?_assertEqual([],divisors(0)),
      ?_assertEqual([],divisors(1)),
-     ?_assertEqual([1],divisors(2)),
-     ?_assertEqual([1,2,3],divisors(6)),
-     ?_assertEqual([1,2,3,4,6],divisors(12))
+     ?_assertEqual([1,2],divisors(2)),
+     ?_assertEqual([1,2,3,6],divisors(6)),
+     ?_assertEqual([1,2,3,4,6,12],divisors(12))
     ].
