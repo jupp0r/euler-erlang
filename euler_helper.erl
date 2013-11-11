@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -246,6 +246,34 @@ fib(2) ->
 fib(N) ->
     fib(N-2) + fib(N-1).
 
+sieve(Candidates,SearchList,Primes,Maximum) ->
+    SetEmpty = ordsets:size(Candidates) == 0 orelse ordsets:size(SearchList) == 0,
+    if
+        SetEmpty == true ->
+            ordsets:union(Primes,Candidates);
+        true ->
+            [H|_] = ordsets:to_list(Candidates),
+            ReducedCandidates1 = ordsets:del_element(H, Candidates),
+            {ReducedCandidates2, ReducedSearchList} = remove_multiples_of(H, ReducedCandidates1, SearchList),
+            NewPrimes = ordsets:add_element(H,Primes),
+            sieve(ReducedCandidates2, ReducedSearchList, NewPrimes, Maximum)
+    end.
+
+remove_multiples_of(Number,Candidates,SearchList) ->
+    CandidatesSize = ordsets:size(SearchList),
+    io:fwrite("removing multiples of ~B, Size of SearchList: ~B~n",[Number,CandidatesSize]),
+    NewSearchList = ordsets:filter(fun(X) -> X >= Number * Number end, SearchList),
+    RemoveList = ordsets:filter(fun(X) -> X rem Number == 0 end, NewSearchList),
+    {ordsets:subtract(Candidates, RemoveList), ordsets:subtract(NewSearchList, RemoveList)}.
+                           
+
+calc_sieve(N) ->
+    io:fwrite("Creating Candidates...~n"),
+    CandidateList = lists:seq(3,N,2),
+    Candidates=ordsets:from_list(CandidateList),
+    io:fwrite("Sieving...~n"),
+    ordsets:add_element(2,sieve(Candidates,Candidates,ordsets:new(),N)).
+
 
 %% tests
 
@@ -366,4 +394,9 @@ divisors_test_() ->
      ?_assertEqual([1,2],divisors(2)),
      ?_assertEqual([1,2,3,6],divisors(6)),
      ?_assertEqual([1,2,3,4,6,12],divisors(12))
+    ].
+
+calc_sieve_test_() ->
+    [
+     ?_assertEqual([2,3,5,7], ordsets:to_list(calc_sieve(10)))
     ].
