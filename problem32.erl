@@ -1,25 +1,10 @@
 -module(problem32).
 -include_lib("eunit/include/eunit.hrl").
--import(euler_helper,[int_to_digit_list/1,digit_list_to_int/1,perms/1]).
+-import(euler_helper,[int_to_digit_list/1,digit_list_to_int/1,perms/1,is_pandigital/1]).
 -export([problem32/0]).
 
 problem32() ->
     pandigital_products().
-
-is_pandigital(L) ->
-    is_pandigital(L,1).
-
-is_pandigital([],_) ->
-    true;
-is_pandigital(L,K) ->
-    InList = lists:member(K,L),
-    if
-        InList ->
-            NewL = lists:delete(K,L),
-            is_pandigital(NewL,K+1);
-        true ->
-            false
-    end.
 
 pandigital_products() ->
     [ [digit_list_to_int(A),digit_list_to_int(B)] || [A,B] <- pandigital_products(1) ].
@@ -57,12 +42,6 @@ part_combs([H1|T1],[H2|T2]) ->
 
 
 %% tests
-
-is_pandigital_test_() ->
-    [
-     ?_assert(is_pandigital([1])),
-     ?_assertNot(is_pandigital([2,3]))
-    ].
 
 part_combs_test_() ->
     [

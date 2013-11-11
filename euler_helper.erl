@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -274,6 +274,20 @@ calc_sieve(N) ->
     io:fwrite("Sieving...~n"),
     ordsets:add_element(2,sieve(Candidates,Candidates,ordsets:new(),N)).
 
+is_pandigital(L) ->
+    is_pandigital(L,1).
+
+is_pandigital([],_) ->
+    true;
+is_pandigital(L,K) ->
+    InList = lists:member(K,L),
+    if
+        InList ->
+            NewL = lists:delete(K,L),
+            is_pandigital(NewL,K+1);
+        true ->
+            false
+    end.
 
 %% tests
 
@@ -399,4 +413,10 @@ divisors_test_() ->
 calc_sieve_test_() ->
     [
      ?_assertEqual([2,3,5,7], ordsets:to_list(calc_sieve(10)))
+    ].
+
+is_pandigital_test_() ->
+    [
+     ?_assert(is_pandigital([1])),
+     ?_assertNot(is_pandigital([2,3]))
     ].
