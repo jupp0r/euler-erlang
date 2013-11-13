@@ -4,48 +4,22 @@
 -export([problem32/0]).
 
 problem32() ->
-    pandigital_products().
+    Permutations = euler_helper:perms(lists:seq(1,9)),
+    PermutationCombos = lists:map(fun(X) -> lists:map(fun euler_helper:digit_list_to_int/1, X) end, permutation_combos(Permutations)),
+    lists:sum(lists:usort(lists:map(fun([_,_,C]) -> C end, lists:filter(fun([A,B,C]) -> A*B==C end, PermutationCombos)))).
 
-pandigital_products() ->
-    [ [digit_list_to_int(A),digit_list_to_int(B)] || [A,B] <- pandigital_products(1) ].
+permutation_combos([]) ->
+    [];
+permutation_combos([H|T]) ->
+    [[A,B,C] || N1 <- lists:seq(1,length(H)-2),
+                N2 <- lists:seq(N1+1,length(H)-1),
+                A <- [lists:sublist(H,1,N1)],
+                B <- [lists:sublist(H,N1+1,N2-N1)],
+                C <- [lists:sublist(H,N2+1,length(H)-N2)]] ++ permutation_combos(T).
 
-pandigital_products(N) when N < 10000 ->
-    DList = int_to_digit_list(N),
-    DListIsPanDigital = is_pandigital(DList),
-    if
-        DListIsPanDigital ->
-            RestList = lists:seq(1,9) -- DList,
-            IsSumProd = is_sum_prod(RestList,N),
-            if
-                IsSumProd ->
-                    [N];
-                true ->
-                    []
-            end;
-        true ->
-            []
-    end ++ pandigital_products(N+1);
-pandigital_products(N) when N >= 10000 ->
-    [].
-
-is_sum_prod(L,N) ->
-    lists:any(fun([N1,N2]) -> digit_list_to_int(N1) * digit_list_to_int(N2) == N end, part_combs(L)).
-
-part_combs([H|T]) ->
-    part_combs([H],T).
-
-part_combs(L,[A]) ->
-    [[X,[A]] || X <- perms(L)];
-part_combs([H1|T1],[H2|T2]) ->
-    [[L1,L2] || D1 <- perms([H1|T1]), D2 <- perms([H2|T2]), E1 <- [H1|T1], E2 <- [H1,T1], L1 = D1 ++ ([E2] -- [E1]), L2 = (D2 ++ [E1]) -- [E2]]
-        ++ part_combs([H1,H2|T1],T2).
-
-
-%% tests
-
-part_combs_test_() ->
+%tests
+permutation_combos_test_() ->
     [
-     ?_assertEqual([[[1],[2]]],part_combs([1,2])),
-     ?_assertEqual([[[1],[2,3]],[[1],[3,2]],[[2],[1,3]],[[2],[3,1]],[[1,2],[3]],[[2,1],[3]]],
-                   part_combs([1,2,3]))
+     ?_assertEqual(lists:sort([[[1],[2],[3]]]), lists:sort(permutation_combos([[1,2,3]]))),
+     ?_assertEqual(lists:sort([[[1,2],[3],[4]],[[1],[2,3],[4]],[[1],[2],[3,4]]]), lists:sort(permutation_combos([[1,2,3,4]])))
     ].
