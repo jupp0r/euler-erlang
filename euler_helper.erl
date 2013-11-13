@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -289,6 +289,10 @@ is_pandigital(L,K) ->
             false
     end.
 
+number_is_palindromic(X) ->
+    Xstr = integer_to_list(X),
+    Xstr == lists:reverse(Xstr).
+
 %% tests
 
 digit_list_to_int_test_() ->
@@ -420,3 +424,9 @@ is_pandigital_test_() ->
      ?_assert(is_pandigital([1])),
      ?_assertNot(is_pandigital([2,3]))
     ].
+
+number_is_palindromic_test_() ->
+    [ ?_assert(number_is_palindromic(1)),
+      ?_assert(number_is_palindromic(11)),
+      ?_assertNot(number_is_palindromic(12)),
+      ?_assert(number_is_palindromic(111112223322211111)) ].
