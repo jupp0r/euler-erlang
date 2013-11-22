@@ -311,9 +311,6 @@ generate_diagonal_sequence(K,0,Step,Max) ->
 generate_diagonal_sequence(K,Left,Step,Max) ->
     [K] ++ generate_diagonal_sequence(K + Step, Left - 1, Step, Max).
 
-
-
-
 %% tests
 generate_diagonal_sequence_test_() ->
     [
