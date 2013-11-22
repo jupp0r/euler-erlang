@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1, count_map/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1, count_map/1, generate_diagonal_sequence/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -301,7 +301,25 @@ count_map(List) ->
     UniqueList = lists:usort(List),
     [{X,count_element(X,List)} || X <- UniqueList].
 
+generate_diagonal_sequence(N) ->
+    generate_diagonal_sequence(1,4,2,N).
+
+generate_diagonal_sequence(K, _, _, Max) when K > Max ->
+        [];
+generate_diagonal_sequence(K,0,Step,Max) ->
+        [K] ++ generate_diagonal_sequence(K + Step + 2, 3, Step + 2, Max);
+generate_diagonal_sequence(K,Left,Step,Max) ->
+    [K] ++ generate_diagonal_sequence(K + Step, Left - 1, Step, Max).
+
+
+
+
 %% tests
+generate_diagonal_sequence_test_() ->
+    [
+     ?_assertEqual([1,3,5,7,9,13,17,21,25], generate_diagonal_sequence(25))
+    ].
+
 
 digit_list_to_int_test_() ->
     [
