@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1, count_map/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -293,6 +293,14 @@ number_is_palindromic(X) ->
     Xstr = integer_to_list(X),
     Xstr == lists:reverse(Xstr).
 
+count_element(Elem, List) ->
+    length([ok || I <- List,
+                  I == Elem]).
+
+count_map(List) ->
+    UniqueList = lists:usort(List),
+    [{X,count_element(X,List)} || X <- UniqueList].
+
 %% tests
 
 digit_list_to_int_test_() ->
@@ -430,3 +438,13 @@ number_is_palindromic_test_() ->
       ?_assert(number_is_palindromic(11)),
       ?_assertNot(number_is_palindromic(12)),
       ?_assert(number_is_palindromic(111112223322211111)) ].
+
+count_element_test_() ->
+    [
+     ?_assertEqual(2, count_element(a,[a,b,a]))
+    ].
+
+count_map_test_() ->
+    [
+     ?_assertEqual([{a,2},{b,1}],count_map([a,b,a]))
+    ].

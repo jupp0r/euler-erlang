@@ -11,7 +11,7 @@ problem39() ->
                               P < 1000,
                               C*C == A*A + B*B
                  ],
-    CountMap = count_map(Solutions),
+    CountMap = euler_helper:count_map(Solutions),
     lists:foldl(fun({X,Count}, {P, Max}) ->
                         if
                             Count > Max ->
@@ -22,21 +22,3 @@ problem39() ->
                 end, {invalid, 0}, CountMap).
 
 
-count_element(Elem, List) ->
-    length([ok || I <- List,
-                  I == Elem]).
-
-count_map(List) ->
-    UniqueList = lists:usort(List),
-    [{X,count_element(X,List)} || X <- UniqueList].
-
-%tests
-count_element_test_() ->
-    [
-     ?_assertEqual(2, count_element(a,[a,b,a]))
-    ].
-
-count_map_test_() ->
-    [
-     ?_assertEqual([{a,2},{b,1}],count_map([a,b,a]))
-    ].

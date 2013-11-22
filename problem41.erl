@@ -2,7 +2,6 @@
 
 -export([problem41/0]).
 -include_lib("eunit/include/eunit.hrl").
--compile(export_all).
 
 problem41() ->
     PrimeCandidates = [euler_helper:digit_list_to_int(X) || X <- empty_perms(lists:seq(1,9)), euler_helper:is_pandigital(X)],
