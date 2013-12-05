@@ -1,7 +1,7 @@
 -module(problem79).
 -include_lib("eunit/include/eunit.hrl").
 -export([problem79/0]).
--import(euler_helper,[int_to_digit_list/1]).
+-import(euler_helper,[int_to_digit_list/1, digit_list_to_int/1]).
 -import(lists,[map/2,member/2]).
 
 problem79() ->
@@ -9,30 +9,11 @@ problem79() ->
     find_code(Codes).
 
 find_code(Codes) ->
-    find_code(extract_constraints(Codes), Codes, []).
-find_code(_, [], Result) ->
-    Result;
-find_code(Constraints,[Head|Rest], Results) ->
-    find_code(Constraints, Rest, insert_code(Constraints, int_to_digit_list(Head), Results)).
-
-insert_code(_,Code,[]) ->
-    Code;
-insert_code(_,[],Results) ->
-    Results;
-insert_code(Constraints, [CodeHead|CodeRest], [ResultHead|RestResults]) ->
-    IsBefore = member([CodeHead, ResultHead], Constraints),
-    IsAfter = member([ResultHead, CodeHead], Constraints), 
-    IsIncluded = CodeHead == ResultHead,
-    if
-        IsIncluded ->
-            insert_code(Constraints, CodeRest, [ResultHead|RestResults]);
-        IsBefore ->
-            [CodeHead, ResultHead] ++ insert_code(Constraints, CodeRest, RestResults);
-        IsAfter ->
-            [ResultHead, CodeHead] ++ insert_code(Constraints, CodeRest, RestResults);
-        true ->
-            [ResultHead] ++ insert_code(Constraints, [CodeHead|CodeRest], RestResults)
-    end.
+    Constraints = extract_constraints(Codes),
+    Digits = lists:flatten([ int_to_digit_list(X) || X <- Codes]),
+    digit_list_to_int(remove_duplicates(lists:sort(fun(A,B) ->
+                        lists:member([A,B], Constraints)
+                end, Digits))).
 
 extract_constraints(Codes) ->
     extract_constraints(Codes, []).
@@ -53,6 +34,16 @@ pos(X,[X|_]) ->
 pos(N1,[_|Rest]) ->
     1+pos(N1, Rest).
 
+remove_duplicates([]) ->
+    [];
+remove_duplicates([H|T]) ->
+    case lists:member(H,T) of
+        true ->
+            remove_duplicates(T);
+        false ->
+            [H] ++ remove_duplicates(T)
+    end.
+
 %% tests
 extract_constraints_test_() ->
     [
@@ -69,9 +60,14 @@ pos_test_() ->
      ?_assertEqual(2,pos(5,[6,5,7]))
     ].
         
-insert_code_test_() ->
+remove_duplicates_test_() ->
     [
-     ?_assertEqual([1,2,3], insert_code([],[1,2,3],[])),
-     ?_assertEqual([1,2,3], insert_code([[1,2]],[1],[2,3])),
-     ?_assertEqual([3,1,9,6,8,0], insert_code)
+     ?_assertEqual([1,2], remove_duplicates([1,1,1,2,2,2]))
     ].
+
+%% insert_code_test_() ->
+%%     [
+%%      ?_assertEqual([1,2,3], insert_code([],[1,2,3],[])),
+%%      ?_assertEqual([1,2,3], insert_code([[1,2]],[1],[2,3])),
+%%      ?_assertEqual([3,1,9,6,8,0], insert_code)
+%%     ].
