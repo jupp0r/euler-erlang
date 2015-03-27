@@ -45,7 +45,7 @@ defmodule Problem61 do
   end
 
   defp discover_branch(number, permutation) do
-    :lists.reverse(discover_branch([number], permutation, []))
+    discover_branch([number], permutation, [])
   end
 
   defp discover_branch([],_,_) do
@@ -57,7 +57,7 @@ defmodule Problem61 do
     last_digits  = rem(last,100)
     cond do
       first_digits == last_digits ->
-        [last | results]
+        results ++ [last]
       true ->
         discover_branch(rest, [], results)
     end
