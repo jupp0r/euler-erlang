@@ -4,76 +4,99 @@ defmodule Problem61 do
   use ExUnit.Case
 
   def problem61 do
-    triangle_fun = fn(n) -> div(n*(n+1),2) end
-    square_fun = fn(n) -> n*n end
-    pentagonal_fun = fn(n) -> n*div((3*n-1),2) end
-    hexagonal_fun = fn(n) -> n*(2*n-1) end
-    heptagonal_fun = fn(n) -> n*div((5*n-3),2) end
-    octagonal_fun = fn(n) -> n*(3*n-2) end
-    triangle_set = create_figurate_set(triangle_fun)
-    square_set = create_figurate_set(square_fun)
-    pentagonal_set = create_figurate_set(pentagonal_fun)
-    hexagonal_set = create_figurate_set(hexagonal_fun)
-    heptagonal_set = create_figurate_set(heptagonal_fun)
-    octagonal_set = create_figurate_set(octagonal_fun)
-    set_list = [triangle_set, square_set, pentagonal_set] #, hexagonal_set , heptagonal_set, octagonal_set]
-    find_figurate_cycles(set_list)
+    triangle_set = create_figurate_set(&triangle_fun/1)
+    square_set = create_figurate_set(&square_fun/1)
+    pentagonal_set = create_figurate_set(&pentagonal_fun/1)
+    hexagonal_set = create_figurate_set(&hexagonal_fun/1)
+    heptagonal_set = create_figurate_set(&heptagonal_fun/1)
+    octagonal_set = create_figurate_set(&octagonal_fun/1)
+    set_list = [triangle_set, square_set, pentagonal_set, hexagonal_set , heptagonal_set, octagonal_set]
+    find_permuted_figurate_cycles(:lists.map(&:sets.to_list/1, set_list)) |> Enum.sum
+  end
+
+  defp triangle_fun(n) do 
+    div(n*(n+1),2)
+  end
+
+  defp square_fun(n) do
+    n*n
+  end
+
+  defp pentagonal_fun(n) do
+    div(n*(3*n-1),2)
+  end
+                      
+  defp hexagonal_fun(n) do
+    n*(2*n-1)
+  end
+
+  defp heptagonal_fun(n) do
+    div(n*(5*n-3), 2)
+  end
+                      
+  defp octagonal_fun(n) do
+    n*(3*n-2)
+  end
+
+  defp find_permuted_figurate_cycles (number_lists) do
+    permutations = :euler_helper.perms number_lists
+    results = permutations |> Enum.map(&find_figurate_cycles/1)
+    solution = results |> Enum.find(fn(x) -> x != [] end)
+    solution
   end
   
-  defp find_figurate_cycles(set_list) do
-    [triangle_set | rest_list] = set_list
-    permutations = :euler_helper.perms(rest_list)
-    find_figurate_cycles(:sets.to_list(triangle_set), permutations)
+  defp find_figurate_cycles([first_list | rest_lists]) do
+    find_figurate_cycles(rest_lists, first_list)
   end
 
-  defp find_figurate_cycles([],_) do
+  defp find_figurate_cycles(_, []) do
     []
   end
 
-  defp find_figurate_cycles(_,[]) do
-    []
-  end
-
-  defp find_figurate_cycles([triangle_num|triangle_rest], [permutation|rest_permutations]) do
-    cut_results = discover_branch(triangle_num, permutation)
-    case cut_results do
+  defp find_figurate_cycles(rest, [h|t]) do
+    case discover_branch(rest, [h]) do
       [] ->
-        find_figurate_cycles([triangle_num|triangle_rest], rest_permutations) ++ find_figurate_cycles(triangle_rest, [permutation|rest_permutations])
-      _ ->
-        cut_results
+        find_figurate_cycles(rest,t)
+      result ->
+        result
     end
   end
-
-  defp discover_branch(number, permutation) do
-    discover_branch([number], permutation, [])
+  
+  defp discover_branch([], result) do
+    result
   end
 
-  defp discover_branch([],_,_) do
-    []
-  end
-
-  defp discover_branch([last|rest],[], results) do 
-    first_digits = div(hd(results),100)
-    last_digits  = rem(last,100)
-    cond do
-      first_digits == last_digits ->
-        results ++ [last]
-      true ->
-        discover_branch(rest, [], results)
+  defp discover_branch([head_list | rest], [result_head | result_rest]) do
+    result_front_digits = div(result_head,100)
+    filter_function = case rest do
+                        [] ->
+                        fn (x) ->
+                          result_back_digits = :lists.reverse(result_rest) |> hd |> rem(100)
+                          rem(x, 100) == result_front_digits && div(x,100) == result_back_digits
+                        end
+                        _ -> fn (x) ->
+                          rem(x, 100) == result_front_digits
+                        end
+                      end
+    
+    filtered_list = :lists.filter(filter_function, head_list)
+                                                                          
+    branch_list = :lists.map(fn(x) ->
+      case discover_branch(rest, [x] ++ [result_head | result_rest]) do
+        [] ->
+          []
+        result ->
+          result
+      end
+    end, filtered_list)
+    case :lists.dropwhile(fn(x) -> x == [] end, branch_list) do
+      [] ->
+        []
+      res ->
+        hd(res)
     end
   end
-
-  defp discover_branch([last_number | rest_numbers], [this_set | rest_sets], results) do
-    last_digits = rem(last_number, 100)
-    search_space = :lists.seq(last_digits*100,last_digits*100+99)
-    search_set = :sets.from_list(search_space)
-    intersection = :sets.intersection(this_set, search_set)
-    result_set = :sets.from_list(results)
-    intersection_without_results = :sets.subtract(intersection, result_set)
-    intersection_list = :sets.to_list(intersection_without_results)
-    discover_branch(intersection_list, rest_sets, results ++ [last_number]) ++ discover_branch(rest_numbers, [this_set | rest_sets], results)
-  end
-
+  
   defp create_figurate_set(fun) do
     search_set = :sets.new
     create_figurate_set(search_set,fun,1, 1000, 9999)
@@ -96,11 +119,10 @@ defmodule Problem61 do
     assert :lists.sort(:sets.to_list(create_figurate_set(:sets.new, fn(n) -> div(n*(n+1),2) end,1, 10, 20))) == [10,15]
   end
 
-  test "discover_branch yields positive results" do
-    assert discover_branch(1122, [:sets.from_list([2233, 1234]), :sets.from_list([3311, 3423])]) == [1122, 2233, 3311]
-  end
-
-  test "discover_branch yields negative results" do
-    assert discover_branch(1127, [:sets.from_list([2233, 1234]), :sets.from_list([3311, 3423])]) == []
+  test "find_figurative_cycles according to problem example" do
+    triangle_set = create_figurate_set(&triangle_fun/1)
+    square_set = create_figurate_set(&square_fun/1)
+    pentagonal_set = create_figurate_set(&pentagonal_fun/1)
+    assert :lists.sort(find_figurate_cycles(:lists.map(&:sets.to_list/1, [triangle_set, square_set, pentagonal_set]))) == [2882, 8128, 8281]
   end
 end
