@@ -1,6 +1,6 @@
 -module(problem26).
 -include_lib("eunit/include/eunit.hrl").
--import(euler_helper,[int_pow/2]).
+-import(euler_helper,[int_pow/2, loop_len/1]).
 -export([problem26/0]).
 
 div_list(N) ->
@@ -8,15 +8,6 @@ div_list(N) ->
 
 div_list(N,K) ->
     integer_to_list(int_pow(10,2*K) div N).
-
-loop_len(Str) ->
-    Match = re:run(Str,"^(([0-9])|\\2+)*?(([0-9]+?)\\4+)[0-9]*$",[{capture,[4]}]),
-    case Match of
-        {match,[{_,Len}]} ->
-            Len;
-        nomatch ->
-            0
-    end.
 
 div_len(N) ->
     {N,loop_len(div_list(N))}.
@@ -48,14 +39,6 @@ div_list_test_() ->
      ?_assertEqual("5000",div_list(2)),
      ?_assertEqual("2000000000",div_list(5)),
      ?_assertEqual("333333",div_list(3))
-    ].
-
-loop_len_test_() ->
-    [
-     ?_assertEqual(1,loop_len("33333")),
-     ?_assertEqual(2,loop_len("121212")),
-     ?_assertEqual(0,loop_len("123456890")),
-     ?_assertEqual(0,loop_len(""))
     ].
 
 div_len_test_() ->

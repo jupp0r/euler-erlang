@@ -1,6 +1,6 @@
 -module(euler_helper).
 -include_lib("eunit/include/eunit.hrl").
--export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1, count_map/1, generate_diagonal_sequence/1]).
+-export([prime/1,dividable_by/2,gcd/2,lcm/2,lcm_multiple/1, int_to_digit_list/1, int_pow/2, int_pow_fun/3, fac/1, triangle_seq/1, dijkstra/2, longest_path/2, read_triangular_graph_data/1, divisors/1, sdivisors/1, fib/1, perms/1, digit_list_to_int/1, calc_sieve/1, is_pandigital/1, number_is_palindromic/1, count_map/1, generate_diagonal_sequence/1, loop_len/1]).
 
 -define(LONG_TEST_PRIME, 1073807359).
 -define(infinity,9999999999999999999999999).
@@ -311,6 +311,15 @@ generate_diagonal_sequence(K,0,Step,Max) ->
 generate_diagonal_sequence(K,Left,Step,Max) ->
     [K] ++ generate_diagonal_sequence(K + Step, Left - 1, Step, Max).
 
+loop_len(Str) ->
+    Match = re:run(Str,"^((\\C)|\\2+)*?((\\C+?)\\4+)$",[{capture,[4]}]),
+    case Match of
+        {match,[{_,Len}]} ->
+            Len;
+        nomatch ->
+            0
+    end.
+
 %% tests
 generate_diagonal_sequence_test_() ->
     [
@@ -463,3 +472,14 @@ count_map_test_() ->
     [
      ?_assertEqual([{a,2},{b,1}],count_map([a,b,a]))
     ].
+
+loop_len_test_() ->
+    [
+     ?_assertEqual(1,loop_len("33333")),
+     ?_assertEqual(2,loop_len("121212")),
+     ?_assertEqual(0,loop_len("123456890")),
+     ?_assertEqual(0,loop_len("")),
+     ?_assertEqual(2,loop_len("1121212121"))
+    ].
+
+
