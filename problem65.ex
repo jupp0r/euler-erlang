@@ -1,6 +1,7 @@
 ExUnit.start
 
 require Integer
+require Euler
 
 defmodule Problem65 do
   use ExUnit.Case
