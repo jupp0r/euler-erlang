@@ -14,17 +14,18 @@ find_divisor_primes(N) ->
     io:fwrite("Creating Prime List...~n"),
     PrimeList = create_prime_list(N+1),
     io:fwrite("Finding Divisor Primes...~n"),
-    find_divisor_primes(N,0, PrimeList).
+    find_divisor_primes(PrimeList, 0, PrimeList).
 
-find_divisor_primes(0, Sum, _) ->
+find_divisor_primes([], Sum, _) ->
     Sum;
-find_divisor_primes(N, Sum, PrimeList) ->
-    io:fwrite("Divisor Prime for ~B~n",[N]),
-    case divisorprime(N, PrimeList) of
+find_divisor_primes([H|T], Sum, PrimeList) ->
+    TestedNumber = H - 1,
+    io:fwrite("Divisor Prime for ~B~n",[TestedNumber]),
+    case divisorprime(TestedNumber, PrimeList) of
         true ->
-            find_divisor_primes(N-1, Sum + N, PrimeList);
+            find_divisor_primes(T, Sum + TestedNumber, PrimeList);
         false ->
-            find_divisor_primes(N-1, Sum, PrimeList)
+            find_divisor_primes(T, Sum, PrimeList)
     end.
 
 divisorprime(N, PrimeList) ->
@@ -36,35 +37,7 @@ lookup_prime(N, PrimeList) ->
     ordsets:is_element(N, PrimeList).
 
 create_prime_list(N) ->
-    calc_sieve(N).
-
-sieve(Candidates,SearchList,Primes,Maximum) ->
-    SetEmpty = ordsets:size(Candidates) == 0 orelse ordsets:size(SearchList) == 0,
-    if
-        SetEmpty == true ->
-            ordsets:union(Primes,Candidates);
-        true ->
-            [H|_] = ordsets:to_list(Candidates),
-            ReducedCandidates1 = ordsets:del_element(H, Candidates),
-            {ReducedCandidates2, ReducedSearchList} = remove_multiples_of(H, ReducedCandidates1, SearchList),
-            NewPrimes = ordsets:add_element(H,Primes),
-            sieve(ReducedCandidates2, ReducedSearchList, NewPrimes, Maximum)
-    end.
-
-remove_multiples_of(Number,Candidates,SearchList) ->
-    CandidatesSize = ordsets:size(SearchList),
-    io:fwrite("removing multiples of ~B, Size of SearchList: ~B~n",[Number,CandidatesSize]),
-    NewSearchList = ordsets:filter(fun(X) -> X >= Number * Number end, SearchList),
-    RemoveList = ordsets:filter(fun(X) -> X rem Number == 0 end, NewSearchList),
-    {ordsets:subtract(Candidates, RemoveList), ordsets:subtract(NewSearchList, RemoveList)}.
-                           
-
-calc_sieve(N) ->
-    io:fwrite("Creating Candidates...~n"),
-    CandidateList = lists:seq(3,N,2),
-    Candidates=ordsets:from_list(CandidateList),
-    io:fwrite("Sieving...~n"),
-    ordsets:add_element(2,sieve(Candidates,Candidates,ordsets:new(),N)).
+    euler_helper:calc_sieve(N).
 
 divisors_prime(N, K) ->
     PrimeFactors = divisor_filter_list(N,divisors_prime2(N, K)),
@@ -101,11 +74,6 @@ divisor_filter_list(N,L) ->
 iterate_last_digits_test_() ->
     [
      ?_assertEqual(true , divisorprime(30, create_prime_list(100)))
-    ].
-
-calc_sieve_test_() ->
-    [
-     ?_assertEqual([2,3,5,7], ordsets:to_list(calc_sieve(10)))
     ].
 
 divisors_prime_test_() ->
