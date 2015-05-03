@@ -42,5 +42,54 @@ defmodule Euler do
     {next_coefficient, root, next_summand, next_nominator}
   end
 
+  def partition_count_stream do
+    Stream.resource(
+      fn ->
+        {1, Map.new}
+      end,
+      fn {x, cache} ->
+        new_result = partition_count(x, cache)
+#        IO.puts "#{x} -> #{new_result}"
+        {[{x,new_result}], {x+1, Map.put(cache, x, new_result)}}
+      end,
+      &(&1))
+  end
+
+  defp partition_count(n,_) when n < 0 do
+    0
+  end
+  defp partition_count 0,_ do
+    1
+  end
+  defp partition_count 1,_ do
+    1
+  end
+  defp partition_count n, cache do
+    produce_generalized_pentagonal_number_stream |>
+      Enum.take_while(&((n > &1) or (n == &1))) |>
+      Enum.map(&(lookup_or_compute_partition_count(cache, n-&1))) |>
+      Stream.zip(Stream.cycle([1,1,-1,-1])) |>
+      Enum.map(fn ({a,b}) -> a*b end) |>
+      Enum.sum
+  end
+
+  defp produce_generalized_pentagonal_number_stream do
+    Stream.resource(
+      fn -> 1 end,
+      fn x ->
+        {[round((3*x*x-x)/2), round((3*x*x+x)/2)], x+1}
+      end,
+      &(&1)
+    )
+  end
+
+  defp lookup_or_compute_partition_count cache, n do
+    case Map.has_key? cache, n do
+      true ->
+        Map.get(cache, n)
+      false ->
+        partition_count(n, cache)
+    end
+  end
 
 end
