@@ -1,4 +1,9 @@
+ExUnit.start
+
+require Integer
+
 defmodule Euler do
+  use ExUnit.Case
 
   def pputs(data, string) do
     IO.puts string
@@ -92,4 +97,21 @@ defmodule Euler do
     end
   end
 
+  def euler_phi n do
+    distinct_prime_divisors = :euler_helper.divisors(n) |> Enum.filter(&:euler_helper.prime/1)
+    Enum.reduce(distinct_prime_divisors, 1,
+      fn x,acc ->
+        acc*(1-1/x)
+      end
+    ) * n |> round
+  end
+
+  def is_permutation? a, b do
+    :euler_helper.int_to_digit_list(a) |> Enum.sort == :euler_helper.int_to_digit_list(b) |> Enum.sort and a != b
+  end
+
+  test "is_permutation" do
+    assert is_permutation?(5,5) == false
+    assert is_permutation?(23,32) == true
+  end
 end

@@ -16,18 +16,4 @@ defmodule Problem69 do
         end)
     IO.puts inspect(x)
   end
-
-  defp euler_phi n do
-    distinct_prime_divisors = :euler_helper.divisors(n) |> Enum.filter(&:euler_helper.prime/1)
-    Enum.reduce(distinct_prime_divisors, 1,
-      fn x,acc ->
-        acc*(1-1/x)
-      end
-    ) * n |> round
-  end
-
-  test "euler_phi" do
-    assert euler_phi(10) == 4
-    assert euler_phi(70) == 24
-  end
 end

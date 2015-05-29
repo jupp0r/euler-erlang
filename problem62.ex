@@ -1,5 +1,7 @@
 ExUnit.start
 
+import Euler
+
 defmodule Problem62 do
   use ExUnit.Case
 
@@ -19,9 +21,5 @@ defmodule Problem62 do
       true->
         find_cubes n+1, HashSet.put(set, n*n*n)
     end
-  end
-
-  def is_permutation? a, b do
-    :euler_helper.int_to_digit_list(a) |> Enum.sort == :euler_helper.int_to_digit_list(b) |> Enum.sort
   end
 end
